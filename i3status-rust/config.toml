@@ -25,7 +25,7 @@ format = " $icon {$ssid|Wired} "
 format_alt = " $icon $ip "
 [[block.click]]
 button = "right"
-cmd = "alacritty -e doas iwctl"
+cmd = "$HOME/.local/bin/iwmenu.sh"
 
 [[block]]
 block = "battery"

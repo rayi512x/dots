@@ -7,11 +7,12 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term alacritty
+set $term kitty
 # Your preferred application launcher
-set $menu j4-dmenu-desktop --no-generic --term alacritty --dmenu="wmenu -b -i -n cdd6f4 -N 1e1e2e -s 1e1e2e -S cba6f7 -m 000000 -M cba6f7 -f 'JetBrainsMono Nerd Font 11'"
+set $menu_command wmenu -b -i -n cdd6f4 -N 1e1e2e -s 1e1e2e -S cba6f7 -m 000000 -M cba6f7 -f 'JetBrainsMono Nerd Font 11'
+set $menu j4-dmenu-desktop --no-generic --term $term --dmenu="$menu_command"
 set $logout sway-logout
-set $wallpaper wallpaper.jpg
+set $wallpaper wallpaper.png
 
 include catppuccin-mocha
 
@@ -32,7 +33,10 @@ output * {
 default_border pixel 2
 gaps inner 6
 for_window [all] allow_tearing yes
+for_window [app_id="Firefox"] allow_tearing no
+for_window [app_id="mpv"] allow_tearing no
 for_window [title="^Picture-in-Picture$"] floating enable, move position 940 498, sticky enable, resize set 640 360
+seat seat0 hide_cursor 5000
 
 # target                 title     bg    text   indicator  border
 client.focused           $lavender $base $text  $rosewater $lavender
@@ -64,6 +68,10 @@ input type:touchpad {
     tap enabled
     natural_scroll enabled
     scroll_method edge
+}
+
+input type:pointer {
+  accel_profile flat
 }
 
 ### Key bindings
@@ -226,6 +234,9 @@ bindsym $mod+r mode "resize"
     bindsym $mod+n exec makoctl dismiss
     bindsym $mod+Shift+n exec makoctl restore
 
+    bindsym $mod+i exec $HOME/.local/bin/iwmenu.sh
+    bindsym $mod+m exec nautilus
+
 #
 # Status Bar:
 #
@@ -256,11 +267,10 @@ bar {
 }
 
 ### Autostarts
-# Make xdg-desktop-portal work
 exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec mako
-exec batsignal -w 30 -c 15 -d 10 -D '/usr/bin/loginctl hibernate' -p -m 5
 exec fcitx5
 exec sway-audio-idle-inhibit
+exec batsignal -w 30 -c 15 -d 10 -D '/usr/bin/loginctl hibernate' -p -m 5
 
 include /etc/sway/config.d/*
